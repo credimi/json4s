@@ -106,7 +106,8 @@ object Xml {
       case XValue(s) => JString(s)
       case XLeaf((name, value), attrs) => (value, attrs) match {
         case (_, Nil) => toJValue(value)
-        case (XValue(""), xs) => JObject(mkFields(xs))
+        // as suggested by @jaylach at https://github.com/json4s/json4s/issues/24#issuecomment-14214846
+        case (XValue(""), xs) => JObject((name, JObject(mkFields(xs))))
         case (_, xs) => JObject((name, toJValue(value)) :: mkFields(xs))
       }
       case XNode(xs) => JObject(mkFields(xs))
